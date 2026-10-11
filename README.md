@@ -29,8 +29,7 @@ Aplikasi web untuk menelusuri film menggunakan data dari [TMDB API](https://deve
 ```
 .
 ├── api/
-│   └── tmdb/
-│       └── [...path].ts       # Edge Function: proxy ke TMDB + suntik API key (produksi/Vercel)
+│   └── proxy.ts               # Edge Function: proxy ke TMDB + suntik API key (produksi/Vercel)
 ├── src/
 │   ├── api/
 │   │   └── tmdb.ts            # Semua akses jaringan & error handling terpusat di sini
@@ -126,7 +125,7 @@ npm run preview         # pratinjau hasil build
 Karena ini aplikasi front-end murni, API key tidak boleh disertakan di kode klien. Alurnya:
 
 - **Development** — proxy bawaan Vite (`vite.config.ts`) meneruskan `/api/tmdb/*` ke TMDB dan menambahkan `api_key` di proses dev server.
-- **Production (Vercel)** — Edge Function `api/tmdb/[...path].ts` melakukan hal yang sama, lalu mengembalikan respons ke klien.
+- **Production (Vercel)** — Edge Function `api/proxy.ts` melakukan hal yang sama, lalu mengembalikan respons ke klien. Karena Vercel tidak mendukung *catch-all* route (`[...path]`) di folder `/api` untuk project non-Next.js, request `/api/tmdb/*` diarahkan ke fungsi ini lewat *rewrite* di `vercel.json`.
 
 Dengan begitu bundle browser hanya berisi path `/api/tmdb`, tanpa API key.
 

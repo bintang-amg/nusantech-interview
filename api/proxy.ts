@@ -6,10 +6,7 @@ export default async function handler(request: Request): Promise<Response> {
   const apiKey = process.env.TMDB_API_KEY;
 
   if (!apiKey) {
-    return new Response(
-      JSON.stringify({ error: "TMDB_API_KEY is not configured." }),
-      { status: 500, headers: { "content-type": "application/json" } },
-    );
+    return json({ error: "TMDB_API_KEY is not configured." }, 500);
   }
 
   const url = new URL(request.url);
@@ -33,9 +30,13 @@ export default async function handler(request: Request): Promise<Response> {
       },
     });
   } catch {
-    return new Response(
-      JSON.stringify({ error: "Upstream TMDB request failed." }),
-      { status: 502, headers: { "content-type": "application/json" } },
-    );
+    return json({ error: "Upstream TMDB request failed." }, 502);
   }
+}
+
+function json(body: unknown, status: number): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "content-type": "application/json" },
+  });
 }

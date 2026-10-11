@@ -4,6 +4,10 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
+      "source": "/api/tmdb/(.*)",
+      "destination": "/api/proxy"
+    },
+    {
       "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
